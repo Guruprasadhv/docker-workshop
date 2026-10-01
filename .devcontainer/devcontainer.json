@@ -1,0 +1,25 @@
+{
+  "name": "Docker Workshop",
+  "image": "mcr.microsoft.com/devcontainers/universal:2",
+  "forwardPorts": [5432, 8085, 8888],
+  "portsAttributes": {
+    "5432": {
+      "label": "PostgreSQL",
+      "onAutoForward": "notify",
+      "visibility": "private"
+    },
+    "8085": {
+      "label": "pgAdmin",
+      "onAutoForward": "notify",
+      "protocol": "http",
+      "visibility": "private"
+    },
+    "8888": {
+      "label": "Jupyter",
+      "onAutoForward": "notify",
+      "protocol": "http",
+      "visibility": "private"
+    }
+  },
+  "postStartCommand": "bash .devcontainer/start-workshop.sh"
+}
