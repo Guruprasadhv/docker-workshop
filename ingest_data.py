@@ -2,6 +2,7 @@
 # coding: utf-8
 
 import pandas as pd
+import click
 from sqlalchemy import create_engine
 from tqdm.auto import tqdm
 
@@ -72,17 +73,17 @@ def ingest_data(
 
     print(f'done ingesting to {target_table}')
 
-def main():
-    pg_user = 'root'
-    pg_pass = 'root'
-    pg_host = 'localhost'
-    pg_port = '5432'
-    pg_db = 'ny_taxi'
-    year = 2021
-    month = 1
-    chunksize = 100000
-    target_table = 'yellow_taxi_data'
-
+@click.command()
+@click.option('--pg-user', default='root', show_default=True)
+@click.option('--pg-pass', default='root')
+@click.option('--pg-host', default='localhost', show_default=True)
+@click.option('--pg-port', type=int, default=5432, show_default=True)
+@click.option('--pg-db', default='ny_taxi', show_default=True)
+@click.option('--year', type=click.IntRange(min=1), default=2021, show_default=True)
+@click.option('--month', type=click.IntRange(1, 12), default=1, show_default=True)
+@click.option('--chunksize', type=click.IntRange(min=1), default=100000, show_default=True)
+@click.option('--target-table', default='yellow_taxi_data', show_default=True)
+def main(pg_user, pg_pass, pg_host, pg_port, pg_db, year, month, chunksize, target_table):
     engine = create_engine(f'postgresql://{pg_user}:{pg_pass}@{pg_host}:{pg_port}/{pg_db}')
     url_prefix = 'https://github.com/DataTalksClub/nyc-tlc-data/releases/download/yellow'
 
