@@ -2,18 +2,18 @@
 
 ## Start the services
 
-In Codespaces, the devcontainer starts PostgreSQL, pgAdmin, and Jupyter whenever the Codespace starts or resumes. Rebuild the Codespace container once after adding the devcontainer configuration to activate it.
+In Codespaces, configure the repository to use `pipeline/.devcontainer/devcontainer.json` as its devcontainer configuration. The devcontainer starts PostgreSQL, pgAdmin, and Jupyter whenever the Codespace starts or resumes. Rebuild the Codespace container once after changing the devcontainer configuration.
 
-To start them manually from the repository root:
+When `pipeline/` is open in VS Code, run this from the integrated terminal to start the services manually:
 
 ```bash
 bash .devcontainer/start-workshop.sh
 ```
 
-Ports are forwarded privately: PostgreSQL `5432`, pgAdmin `8085`, and Jupyter `8888`. Find their links in the VS Code **Ports** tab. Jupyter may require its token; retrieve it with:
+PostgreSQL uses port `5432`, pgAdmin uses port `8085`, and Jupyter uses port `8888`. In Codespaces, find their links in the VS Code **Ports** tab. In local VS Code, open pgAdmin at <http://localhost:8085> and Jupyter at <http://localhost:8888>. Jupyter may require its token; retrieve it from this directory with:
 
 ```bash
-cd pipeline && uv run jupyter server list
+uv run jupyter server list
 ```
 
 ## pgAdmin connection
@@ -30,7 +30,7 @@ The Compose configuration preserves the tutorial host name and includes the Code
 
 ## Ingest data
 
-Run the following commands from the `pipeline/` directory. Change `--target-table` to choose the table name:
+Run the January ingestion from the `pipeline/` directory. Change `--target-table` to choose the table name:
 
 ```bash
 uv run python ingest_data.py \
@@ -39,7 +39,7 @@ uv run python ingest_data.py \
 	--year=2021 --month=1 --chunksize=100000
 ```
 
-Build the ingestion image:
+Build the ingestion image from this directory:
 
 ```bash
 docker build -f dockerfile -t taxi_ingest:v001 .
@@ -56,6 +56,6 @@ docker run --rm --network=host taxi_ingest:v001 \
 
 ## Keep database data
 
-PostgreSQL and pgAdmin use the named volumes `ny_taxi_postgres_data` and `pgadmin_data`. They survive stopping/resuming this Codespace and restarting the Compose services. To stop services without deleting their data, run `docker compose --project-directory .. -f compose.yaml down` from `pipeline/`, then start again with `bash .devcontainer/start-workshop.sh` from the repository root.
+PostgreSQL and pgAdmin use the named volumes `ny_taxi_postgres_data` and `pgadmin_data`. They survive stopping/resuming this Codespace and restarting the Compose services. To stop services without deleting their data, run `docker compose --project-name docker-workshop down` from this directory, then start again with `bash .devcontainer/start-workshop.sh`.
 
 Do not run `docker compose down -v` or remove those volumes unless you intend to delete the database and pgAdmin settings. Named volumes are not backups and do not guarantee data survives deleting the Codespace.

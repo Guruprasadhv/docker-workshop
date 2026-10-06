@@ -2,7 +2,6 @@
 set -eu
 
 project_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-pipeline_dir="$project_root/pipeline"
 
 if ! command -v uv >/dev/null 2>&1; then
   printf 'uv is required to start the workshop Jupyter server.\n' >&2
@@ -13,8 +12,10 @@ docker network inspect pg-network >/dev/null 2>&1 || docker network create pg-ne
 docker volume create ny_taxi_postgres_data >/dev/null
 docker volume create pgadmin_data >/dev/null
 
-cd "$pipeline_dir"
-docker compose --project-directory "$project_root" -f "$pipeline_dir/compose.yaml" up -d
+cd "$project_root"
+docker compose --project-name docker-workshop \
+  --project-directory "$project_root" \
+  -f "$project_root/compose.yaml" up -d
 
 if pgrep -f '[j]upyter notebook.*--port=8888' >/dev/null; then
   exit 0

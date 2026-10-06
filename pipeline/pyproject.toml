@@ -15,15 +15,11 @@ dependencies = [
     "tqdm>=4.70.1",
 ]
 
-[project.scripts]
-pipeline = "pipeline:main"
-
-[build-system]
-requires = ["uv_build>=0.12.21,<0.13.0"]
-build-backend = "uv_build"
-
 [dependency-groups]
 dev = [
     "jupyter>=1.1.1",
     "pgcli>=4.7.1",
 ]
+
+[tool.uv]
+package = false
