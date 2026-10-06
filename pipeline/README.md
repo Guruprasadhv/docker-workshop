@@ -4,7 +4,7 @@
 
 In Codespaces, the devcontainer starts PostgreSQL, pgAdmin, and Jupyter whenever the Codespace starts or resumes. Rebuild the Codespace container once after adding the devcontainer configuration to activate it.
 
-To start them manually from this directory:
+To start them manually from the repository root:
 
 ```bash
 bash .devcontainer/start-workshop.sh
@@ -13,7 +13,7 @@ bash .devcontainer/start-workshop.sh
 Ports are forwarded privately: PostgreSQL `5432`, pgAdmin `8085`, and Jupyter `8888`. Find their links in the VS Code **Ports** tab. Jupyter may require its token; retrieve it with:
 
 ```bash
-uv run jupyter server list
+cd pipeline && uv run jupyter server list
 ```
 
 ## pgAdmin connection
@@ -30,7 +30,7 @@ The Compose configuration preserves the tutorial host name and includes the Code
 
 ## Ingest data
 
-Run the January ingestion from this directory. Change `--target-table` to choose the table name:
+Run the following commands from the `pipeline/` directory. Change `--target-table` to choose the table name:
 
 ```bash
 uv run python ingest_data.py \
@@ -56,6 +56,6 @@ docker run --rm --network=host taxi_ingest:v001 \
 
 ## Keep database data
 
-PostgreSQL and pgAdmin use the named volumes `ny_taxi_postgres_data` and `pgadmin_data`. They survive stopping/resuming this Codespace and restarting the Compose services. To stop services without deleting their data, run `docker compose down`, then start again with `bash .devcontainer/start-workshop.sh`.
+PostgreSQL and pgAdmin use the named volumes `ny_taxi_postgres_data` and `pgadmin_data`. They survive stopping/resuming this Codespace and restarting the Compose services. To stop services without deleting their data, run `docker compose --project-directory .. -f compose.yaml down` from `pipeline/`, then start again with `bash .devcontainer/start-workshop.sh` from the repository root.
 
 Do not run `docker compose down -v` or remove those volumes unless you intend to delete the database and pgAdmin settings. Named volumes are not backups and do not guarantee data survives deleting the Codespace.
